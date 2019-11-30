@@ -1,0 +1,4 @@
+type: "simple"
+batch_size: 4
+n_epochs: 10
+save_output: True
