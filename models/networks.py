@@ -2,10 +2,12 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+from models.gumbel_softmax import gumbel_softmax
+
 class Simple(nn.Module):
     def __init__(self):
         super(Simple, self).__init__()
-        self.dropout = nn.Dropout(0.99)
+        #self.dropout = nn.Dropout(0.99)
         self.encoder = nn.Sequential(
             nn.Conv2d(4, 4, 3, stride=2, padding=1),
             nn.ReLU(True),
@@ -49,11 +51,17 @@ class MaskingNet(nn.Module):
         self.decoder = nn.Sequential(
             nn.ConvTranspose2d(8, 4, 2, stride=2),
             nn.ReLU(True),
-            nn.ConvTranspose2d(4, 1, 2, stride=2),
-            nn.Tanh(True),
+            nn.ConvTranspose2d(4, 2, 2, stride=2),
+            nn.Softmax(dim=-1)
         )
 
-    def forward(self, x):
+    def forward(self, x, epoch):
         x = self.encoder(x)
-        x = self.decoder(x)
-        return x
+        x = self.decoder(x).permute(0, 2, 3, 1)
+        logits = x.reshape((-1, 2))
+        noisy = True
+        if epoch % 2 == 0:
+            noisy = False
+        mask = gumbel_softmax(logits, 10, noisy)
+        mask = mask.reshape(-1, 1, 100, 100).float()
+        return mask

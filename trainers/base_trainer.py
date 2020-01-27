@@ -25,14 +25,16 @@ class BaseTrainer(object):
         self.train_loader = torch.utils.data.DataLoader(data,batch_size=self.params["batch_size"])
         
         self.network = Simple()
-        
         self.FC = FC()
-        #self.maskingnet = MaskingNet()
         
-        parameters = list(self.network.parameters()) + list(self.FC.parameters())
-        self.optimizer = optim.Adam(parameters)
+        self.maskingnet = MaskingNet()
+        
+        self.parameters = list(self.maskingnet.parameters()) #list(self.network.parameters()) + list(self.FC.parameters()) + list(self.maskingnet.parameters())
+        self.optimizer = optim.Adam(self.parameters)
         
         self.loss_fn = nn.L1Loss()
+        
+        self.regularizer = nn.L1Loss()
         
     def train(self):
 
@@ -55,19 +57,33 @@ class BaseTrainer(object):
                 
                 images, segs = batch
                 #depth_image = torch.cat((images, segs), 1)
-                #mask = self.maskingnet(images)
-                #sparse_segs = mask * segs
-                sparse_segs = segs
+                mask = self.maskingnet(images, i)
+                sparse_segs = mask * segs
+                #print(mask[0])
+                #sparse_segs = segs
                 feats = self.network(images, sparse_segs)
                 pred_segs = self.FC(feats)
-                loss = self.loss_fn(pred_segs, segs)
+                loss = self.regularizer(mask, torch.zeros_like(mask)) + self.loss_fn(pred_segs, segs)
                 loss.backward()
                 self.optimizer.step()
                 epoch_loss = epoch_loss + loss.detach().numpy()
                 
                 if i == 1:
-                    torch.save(self.network.state_dict(), "cnn_25.pt")
-                    vutils.save_image(images, self.result_dir + "/training_images_" + str(e) + ".png")
+                    #torch.save(self.network.state_dict(), "cnn.pt")
+                    #torch.save(self.maskingnet.state_dict(), "maskingnet.pt")
+                    vutils.save_image(sparse_segs, self.result_dir + "/training_masks_" + str(e) + ".png", normalize=True)
                     vutils.save_image(segs, self.result_dir + "/training_segs_" + str(e) + ".png", normalize=True)
                     vutils.save_image(pred_segs, self.result_dir + "/predicted_segs_" + str(e) + ".png", normalize=True)
+                if i == 2:
+                    vutils.save_image(sparse_segs, self.result_dir + "/2_training_masks_" + str(e) + ".png", normalize=True)
+                    vutils.save_image(segs, self.result_dir + "/2_training_segs_" + str(e) + ".png", normalize=True)
+                    vutils.save_image(pred_segs, self.result_dir + "/2_predicted_segs_" + str(e) + ".png", normalize=True)
+                if i == 5:
+                    vutils.save_image(sparse_segs, self.result_dir + "/5_training_masks_" + str(e) + ".png", normalize=True)
+                    vutils.save_image(segs, self.result_dir + "/5_training_segs_" + str(e) + ".png", normalize=True)
+                    vutils.save_image(pred_segs, self.result_dir + "/5_predicted_segs_" + str(e) + ".png", normalize=True)
+                if i == 10:
+                    vutils.save_image(sparse_segs, self.result_dir + "/10_training_masks_" + str(e) + ".png", normalize=True)
+                    vutils.save_image(segs, self.result_dir + "/10_training_segs_" + str(e) + ".png", normalize=True)
+                    vutils.save_image(pred_segs, self.result_dir + "/10_predicted_segs_" + str(e) + ".png", normalize=True)
             print(epoch_loss / len(self.train_loader))
