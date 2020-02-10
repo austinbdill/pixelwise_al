@@ -1,6 +1,6 @@
 import argparse
 import yaml
-from trainers.base_trainer import BaseTrainer
+from trainers.gumbel_trainer import GumbelTrainer
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--config", type=str, help='path to config file')
@@ -12,7 +12,9 @@ except IOError as msg:
 
 with open("configs/" + args.config, 'r') as f:
     params = yaml.load(f, yaml.FullLoader)
-    
-trainer = BaseTrainer(params)
+
+# Select training algorithm
+if params["type"] == "gumbel":
+    trainer = GumbelTrainer(params)
 
 trainer.train()

@@ -28,3 +28,9 @@ def gumbel_softmax(logits, temperature, noisy=True):
     proxy = (y_hard - y).detach() + y
     return proxy[:, -1]
     #return y_soft, y_hard
+
+def generate_mask(raw_mask, noisy=True, temp=1):
+    logits = raw_mask.reshape((-1, 2))
+    mask = gumbel_softmax(logits, temp, noisy)
+    mask = mask.reshape(-1, 1, 100, 100).float()
+    return mask

@@ -58,11 +58,4 @@ class MaskingNet(nn.Module):
     def forward(self, x, epoch, step):
         x = self.encoder(x)
         x = self.decoder(x).permute(0, 2, 3, 1)
-        logits = x.reshape((-1, 2))
-        noisy = True
-        if step % 5 == 0:
-            noisy = False
-        temp = 10 #((0.9)**(epoch))*10
-        mask = gumbel_softmax(logits, temp, noisy)
-        mask = mask.reshape(-1, 1, 100, 100).float()
-        return mask
+        return x
