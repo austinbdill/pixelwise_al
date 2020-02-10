@@ -5,7 +5,7 @@ from torch.autograd import Variable
 
 def sample_gumbel(shape, eps=1e-20):
     U = torch.rand(shape)
-    return -Variable(torch.log(-torch.log(U + eps) + eps))
+    return -Variable(torch.log(-torch.log(U + eps) + eps)).cuda()
 
 def gumbel_softmax_sample(logits, temperature, noisy):
     y = logits
