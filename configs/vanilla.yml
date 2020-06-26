@@ -1,0 +1,5 @@
+type: "vanilla"
+batch_size: 32
+n_epochs: 10
+tau: 1.0e-2
+save_output: True

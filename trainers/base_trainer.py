@@ -5,6 +5,8 @@ import numpy as np
 import torch
 import torchvision
 from torchvision import transforms
+from torch.utils.tensorboard import SummaryWriter
+from data.data_utils import *
 from tqdm import tqdm
 
 class BaseTrainer(object):
@@ -13,11 +15,10 @@ class BaseTrainer(object):
 
         self.params = params
         
-        input_trans = transforms.Compose([transforms.CenterCrop(300), transforms.Resize(100), transforms.ToTensor()])
-        target_trans = transforms.Compose([transforms.CenterCrop(300),  transforms.Resize(100), transforms.ToTensor()])
+        input_transform = transforms.Compose([RandomCrop(350), Rescale(100), ToTensor()])
         
-        train_data = torchvision.datasets.Cityscapes('data', split="train", target_type="semantic", mode="fine", transform=input_trans, target_transform=target_trans)
-        test_data = torchvision.datasets.Cityscapes('data', split="test", target_type="semantic", mode="fine", transform=input_trans, target_transform=target_trans)
+        train_data = KittiDataset("data/kitti/train", transform=input_transform)
+        test_data = KittiDataset("data/kitti/val", transform=input_transform)
         
         self.train_loader = torch.utils.data.DataLoader(train_data,batch_size=self.params["batch_size"])
         self.test_loader = torch.utils.data.DataLoader(test_data,batch_size=self.params["batch_size"])
@@ -25,7 +26,7 @@ class BaseTrainer(object):
     def train(self):
         # Generate directory for output
         date = datetime.datetime.now()
-        self.result_dir = "results/" + date.strftime("%a_%b_%d_%I:%M%p")
+        self.result_dir = "results/" + self.params["type"] + "_" + date.strftime("%a_%b_%d_%I:%M%p")
         os.mkdir(self.result_dir)
 
         # Dump configurations for current run
@@ -33,18 +34,32 @@ class BaseTrainer(object):
         yaml.dump(self.params, config_file)
         config_file.close()
         
+        self.writer = SummaryWriter(self.result_dir)
+        
         for e in range(self.params["n_epochs"]):
             
             #Training Loop
             print("TRAINING")
+            #print(self.tau)
             for i, batch in tqdm(enumerate(self.train_loader), total=len(self.train_loader)):
-                self.training_step(batch, e, i)
+                #training_loss, avg_mask, critic_loss = self.training_step(batch, e, i)
+                training_loss, avg_mask = self.training_step(batch, e, i)
                 
-                if i in [1, 5, 10, 100]:
+                if i % 100 == 0:
+                    step = e*len(self.train_loader)+i
                     self.save_images(batch, e, i)
-                
+                    self.writer.add_scalar("Number_of_Nonzero_Entries", avg_mask, step)
+                    self.writer.add_scalar("Training_Loss", training_loss, step)
+                    #self.writer.add_scalar("Critic_Loss", critic_loss, step)
+            #self.update_tau()
+            #print(self.tau)    
             print("TESTING")
-            epoch_loss = 0.0
             for i, batch in tqdm(enumerate(self.test_loader), total=len(self.test_loader)):
-                epoch_loss += self.testing_step(batch, e, i)
-            print(epoch_loss / len(self.test_loader))
+                step = e*len(self.test_loader)+i
+                testing_loss = self.testing_step(batch, e, i)
+                if step % 50 == 0:
+                    self.writer.add_scalar("Testing_Loss", testing_loss, step)
+            print("SAVING")
+            torch.save(self.network.state_dict(), self.result_dir + "/feature_network" + "_" + str(e) + ".pt")
+            torch.save(self.FC.state_dict(), self.result_dir + "/FC_network" + "_" + str(e) + ".pt")
+            torch.save(self.maskingnet.state_dict(), self.result_dir + "/mask_network" + "_" + str(e) + ".pt")

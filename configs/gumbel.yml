@@ -1,4 +1,4 @@
 type: "gumbel"
-batch_size: 16
-n_epochs: 3
+batch_size: 32
+n_epochs: 10
 save_output: True

@@ -1,0 +1,5 @@
+type: "ddpg"
+batch_size: 32
+n_epochs: 10
+tau: 1.e-2
+save_output: True
