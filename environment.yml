@@ -13,5 +13,4 @@ dependencies:
   - cudatoolkit=10.1
   - pytorch
   - torchvision
-prefix: /home/austin/anaconda3/envs/pixelwise
 
