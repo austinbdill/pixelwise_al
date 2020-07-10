@@ -1,5 +1,8 @@
 type: "baseline"
+crop_size: 350
 batch_size: 32
 n_epochs: 10
+train_period: 100
+test_period: 50
 tau: 1.0e-2
 save_output: True

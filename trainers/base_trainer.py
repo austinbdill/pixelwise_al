@@ -15,7 +15,7 @@ class BaseTrainer(object):
 
         self.params = params
         
-        input_transform = transforms.Compose([RandomCrop(350), Rescale(100), ToTensor()])
+        input_transform = transforms.Compose([RandomCrop(self.params["crop_size"]), Rescale(100), ToTensor()])
         
         train_data = KittiDataset("data/kitti/train", transform=input_transform)
         test_data = KittiDataset("data/kitti/val", transform=input_transform)
@@ -36,30 +36,23 @@ class BaseTrainer(object):
         
         self.writer = SummaryWriter(self.result_dir)
         
-        for e in range(self.params["n_epochs"]):
-            
+        for e in range(self.params["n_epochs"]):  
             #Training Loop
             print("TRAINING")
-            #print(self.tau)
             for i, batch in tqdm(enumerate(self.train_loader), total=len(self.train_loader)):
-                #training_loss, avg_mask, critic_loss = self.training_step(batch, e, i)
-                training_loss, avg_mask = self.training_step(batch, e, i)
+                training_loss, avg_mask, critic_loss = self.training_step(batch, e, i)
                 
-                if i % 100 == 0:
+                if i % self.params["train_period"] == 0:
                     step = e*len(self.train_loader)+i
                     self.save_images(batch, e, i)
                     self.writer.add_scalar("Number_of_Nonzero_Entries", avg_mask, step)
                     self.writer.add_scalar("Training_Loss", training_loss, step)
-                    #self.writer.add_scalar("Critic_Loss", critic_loss, step)
-            #self.update_tau()
-            #print(self.tau)    
+                    self.writer.add_scalar("Critic_Loss", critic_loss, step)
             print("TESTING")
             for i, batch in tqdm(enumerate(self.test_loader), total=len(self.test_loader)):
                 step = e*len(self.test_loader)+i
                 testing_loss = self.testing_step(batch, e, i)
-                if step % 50 == 0:
+                if step % self.params["test_period"] == 0:
                     self.writer.add_scalar("Testing_Loss", testing_loss, step)
             print("SAVING")
-            torch.save(self.network.state_dict(), self.result_dir + "/feature_network" + "_" + str(e) + ".pt")
-            torch.save(self.FC.state_dict(), self.result_dir + "/FC_network" + "_" + str(e) + ".pt")
-            torch.save(self.maskingnet.state_dict(), self.result_dir + "/mask_network" + "_" + str(e) + ".pt")
+            self.save_models()

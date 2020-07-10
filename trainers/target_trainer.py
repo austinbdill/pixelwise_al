@@ -55,6 +55,8 @@ class TargetTrainer(BaseTrainer):
         images = images.to(self.device)
         segs = segs.to(self.device)
         
+        #Call weighting method
+        
         #Run through neural networks
         raw_mask = self.maskingnet(images)
         mask = generate_mask(raw_mask)
@@ -94,7 +96,7 @@ class TargetTrainer(BaseTrainer):
         for target_param, param in zip(self.target_maskingnet.parameters(), self.maskingnet.parameters()):
             target_param.data.copy_(self.tau * param.data + (1.0 - self.tau) * target_param.data)
             
-        return pred_loss.detach().cpu().numpy(), mask.data.nonzero().size(0)
+        return pred_loss.detach().cpu().numpy(), mask.data.nonzero().size(0), 0
         
     def testing_step(self, batch, e, i):
         with torch.no_grad():

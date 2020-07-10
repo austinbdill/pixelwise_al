@@ -32,6 +32,8 @@ class VanillaTrainer(BaseTrainer):
     def training_step(self, batch, e, i):
         #Zero out gradients
         self.pred_optimizer.zero_grad()
+        
+        #Call weighting method
     
         #Set up batch data
         images, segs = batch
@@ -52,7 +54,7 @@ class VanillaTrainer(BaseTrainer):
         total_loss.backward()
         self.pred_optimizer.step()
             
-        return pred_loss.detach().cpu().numpy(), mask.data.nonzero().size(0)
+        return pred_loss.detach().cpu().numpy(), mask.data.nonzero().size(0), 0
         
     def testing_step(self, batch, e, i):
         with torch.no_grad():
@@ -88,6 +90,6 @@ class VanillaTrainer(BaseTrainer):
        
         vutils.save_image(images, self.result_dir + "/" + str(i) + "_training_images_" + str(e) + ".png", normalize=True)
         vutils.save_image(mask, self.result_dir + "/" + str(i) + "_training_masks_" + str(e) + ".png", normalize=True)
-        #vutils.save_image(raw_mask[:, :, :, 1].view(-1, 1, 100, 100), self.result_dir + "/" + str(i) + "_training_raw_masks_" + str(e) + ".png", normalize=True)
+        vutils.save_image(raw_mask[:, :, :, 1].view(-1, 1, 100, 100), self.result_dir + "/" + str(i) + "_training_raw_masks_" + str(e) + ".png", normalize=True)
         vutils.save_image(segs, self.result_dir + "/" + str(i) + "_training_segs_" + str(e) + ".png", normalize=True)
         vutils.save_image(pred_segs, self.result_dir + "/" + str(i) + "_predicted_segs_" + str(e) + ".png", normalize=True)

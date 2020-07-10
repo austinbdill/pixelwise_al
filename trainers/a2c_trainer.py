@@ -31,6 +31,7 @@ class A2CTrainer(BaseTrainer):
     def training_step(self, batch, e, i):
         #Zero out gradients
         self.pred_optimizer.zero_grad()
+        # This needs to be swapped out for a separate method in base_trainer.py
         lmbda = 200*e
         if i == 0:
             print(lmbda)
@@ -66,7 +67,7 @@ class A2CTrainer(BaseTrainer):
         critic_loss.backward()
         self.critic_optimizer.step()
             
-        return pred_loss.detach().cpu().numpy(), mask.data.nonzero().size(0)
+        return pred_loss.detach().cpu().numpy(), mask.data.nonzero().size(0), 0
         
     def testing_step(self, batch, e, i):
         with torch.no_grad():

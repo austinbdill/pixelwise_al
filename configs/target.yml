@@ -1,5 +1,7 @@
 type: "target"
+crop_size: 350
 batch_size: 32
 n_epochs: 10
-tau: 1.e-2
+train_period: 100
+test_period: 50
 save_output: True

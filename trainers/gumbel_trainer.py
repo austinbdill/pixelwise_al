@@ -35,6 +35,8 @@ class GumbelTrainer(BaseTrainer):
         self.tau = max(self.tau*0.5, 0.01)
         
     def training_step(self, batch, e, i):
+    
+        # Swap this out for a new method
         lmbda = e
         if i == 0:
             print(lmbda)
@@ -62,7 +64,7 @@ class GumbelTrainer(BaseTrainer):
         #Optimize loss function
         total_loss.backward()
         self.optimizer.step()
-        return pred_loss.detach().cpu().numpy(), mask.data.nonzero().size(0)
+        return pred_loss.detach().cpu().numpy(), mask.data.nonzero().size(0), 0
         
     def testing_step(self, batch, e, i):
         with torch.no_grad():

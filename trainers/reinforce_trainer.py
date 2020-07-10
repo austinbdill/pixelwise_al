@@ -33,6 +33,8 @@ class ReinforceTrainer(BaseTrainer):
         #Zero out gradients
         self.pred_optimizer.zero_grad()
         self.mask_optimizer.zero_grad()
+        
+        #This needs to be replaced with a separate class to be shared by all trainers
         self.lmbda = min(1.5*e, 60)
         if i == 0:
             print(self.lmbda)
@@ -64,7 +66,7 @@ class ReinforceTrainer(BaseTrainer):
         mask_loss.backward()
         self.mask_optimizer.step()
             
-        return pred_loss.detach().cpu().numpy(), mask.data.nonzero().size(0)
+        return pred_loss.detach().cpu().numpy(), mask.data.nonzero().size(0), 0
         
     def testing_step(self, batch, e, i):
         with torch.no_grad():

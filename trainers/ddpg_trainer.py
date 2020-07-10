@@ -42,6 +42,7 @@ class DDPGTrainer(BaseTrainer):
         self.mcritic_optimizer.zero_grad()
         self.pcritic_optimizer.zero_grad()
         
+        # Swap this out.
         lmbda = 1000*e
         if i == 0:
             print(lmbda)
