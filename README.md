@@ -4,6 +4,13 @@ This repository is home to a set of Jupyter notebooks and PyTorch code for inves
 
 ## Installation
 
+In order to install all relevant packages you must install conda and then run the following commands.
+
+```console
+user@device:~$ conda env create -f environment.yml
+user@device:~$ conda activate pixelwise
+```
+
 ## Structure
 
 The code can be best understood by considering each subdirectory and the `main.py` file separately. With the exception of the `notebook` subdirectory, all of the code in this repository is related to training an end-to-end model for monocular depth estimation with active learning. 
