@@ -1,6 +1,14 @@
 # Pixelwise Active Learning
 
-This repository is home to a set of Jupyter notebooks and PyTorch code for investigating the use of active learning for monocular depth estimation tasks. 
+This repository is home to a set of Jupyter notebooks and PyTorch code for investigating the use of active learning for monocular depth estimation tasks. It includes a variety of training methods such as the following (references to relevant slide presentations are listed for each):
+
+- `baseline`:
+- `vanilla`:
+- `reinforce`:
+- `target`:
+- `gumbel`:
+- `a2c`:
+- `ddpg`:
 
 ## Installation
 
