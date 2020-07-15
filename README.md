@@ -11,6 +11,8 @@ user@device:~$ conda env create -f environment.yml
 user@device:~$ conda activate pixelwise
 ```
 
+The data can be found at http://www.cvlibs.net/datasets/kitti/eval_depth.php?benchmark=depth_prediction on the link for the 14GB full data set. It will require an email address for them to send the download link to. 
+
 ## Structure
 
 The code can be best understood by considering each subdirectory and the `main.py` file separately. With the exception of the `notebook` subdirectory, all of the code in this repository is related to training an end-to-end model for monocular depth estimation with active learning. 
@@ -40,6 +42,13 @@ This folder is made up of YAML files that set hyperparameters and the type of tr
 This file contains the driver code for the construction of the desired data set and trainer and the training and testing loops for the neural networks.
 
 ## Basic Use
+
+The basic use for running the code is as follows:
+
+```console
+user@device:~$ python main.py --config=<configuration name>.yml
+```
+In the above `<configuration name>` is to be replaced with the name our your desired configuration file from the `configs` subdirectory. 
 
 ## Configuration
 
