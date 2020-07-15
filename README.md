@@ -19,7 +19,7 @@ user@device:~$ conda env create -f environment.yml
 user@device:~$ conda activate pixelwise
 ```
 
-The data can be found at http://www.cvlibs.net/datasets/kitti/eval_depth.php?benchmark=depth_prediction on the link for the 14GB full data set. It will require an email address for them to send the download link to. 
+The data can be found at http://www.cvlibs.net/datasets/kitti/eval_depth.php?benchmark=depth_prediction on the link for the 14GB full data set. It will require an email address for them to send the download link to. Once downloaded, place the resulting two folders in a folder named `kitti` within the data folder. 
 
 ## Structure
 
