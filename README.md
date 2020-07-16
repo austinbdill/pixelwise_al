@@ -60,4 +60,17 @@ In the above `<configuration name>` is to be replaced with the name our your des
 
 ## Configuration
 
+The following are some of the configuration options provided by the yaml files in the `configs` subdirectory.
+
+- type: The algorithm / architecture used for training. Expects a string.  
+- crop_size: The size of the image subregions to be cropped from the dataset for subsampling. Expects an integer. 
+- batch_size: The size of the batches to be used for training and testing. Expects an integer. 
+- n_epochs: The number of epochs used for training. Expects an integer. 
+- train_period: The number of training steps to be performed between logging. Expects an integer. 
+- test_period: The number of testing steps to be performed between logging. Expects an integer. 
+- tau: The amount of noise introduced to the Gumbel-Softmax layer. Expects a float. 
+- save_output: Whether or not to save image outputs for debugging / presenting results. Expects a boolean. 
+
 ## Acknowledgements 
+
+This work was completed while a research assistant and research associate at CMU under the guidance of Barnabas Poczos. In addition, we were advised and funded by an external research group at Lockheed Martin. I am very thankful for the support and interest from both my advisor and those I interacted with at Lockheed Martin. 
