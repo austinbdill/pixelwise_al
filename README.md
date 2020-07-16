@@ -2,13 +2,13 @@
 
 This repository is home to a set of Jupyter notebooks and PyTorch code for investigating the use of active learning for monocular depth estimation tasks. It includes a variety of training methods such as the following (references to relevant slide presentations are listed for each):
 
-- `baseline`:
-- `vanilla`:
-- `reinforce`:
-- `target`:
-- `gumbel`:
-- `a2c`:
-- `ddpg`:
+- `baseline`: [0](slides/presentation_0.pdf)
+- `vanilla`: [1](slides/presentation_1.pdf), [2](slides/presentation_2.pdf)
+- `gumbel`: [2](slides/presentation_2.pdf), [3](slides/presentation_3.pdf), [4](slides/presentation_4.pdf), [5](slides/presentation_5.pdf)
+- `reinforce`: [3](slides/presentation_3.pdf), [4](slides/presentation_4.pdf), [5](slides/presentation_5.pdf)
+- `target`: [3](slides/presentation_3.pdf), [4](slides/presentation_4.pdf)
+- `a2c`: [5](slides/presentation_5.pdf)
+- `ddpg`: [5](slides/presentation_5.pdf), [6](slides/presentation_6.pdf)
 
 ## Installation
 
@@ -27,7 +27,7 @@ The code can be best understood by considering each subdirectory and the `main.p
 
 #### `notebooks`
 
-The Jupyter notebooks in this folder contain all non-end-to-end approaches to this task including gaussian processes and active learning with a pretrained neural network.  
+The Jupyter notebooks in this folder contain all non-end-to-end approaches to this task including gaussian processes and active learning with a pretrained neural network.
 
 #### `data`
 
